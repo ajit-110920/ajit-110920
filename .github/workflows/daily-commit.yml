@@ -20,8 +20,8 @@ jobs:
 
       - name: Commit and Push Changes
         run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "ajit-110920"
+          git config --global user.email "ajitbhandekar110920@gmail.com"
           git add activity_log.txt
           git commit -m "chore: automated daily activity update"
           git push
