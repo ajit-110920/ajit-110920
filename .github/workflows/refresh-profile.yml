@@ -1,0 +1,40 @@
+name: Refresh profile pulse
+
+on:
+  schedule:
+    # Mondays at 06:15 UTC. GitHub may delay scheduled workflows during peak load.
+    - cron: "15 6 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out profile repository
+        uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Generate profile pulse
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_USERNAME: ajit-110920
+        run: node scripts/refresh-profile.mjs
+
+      - name: Commit refreshed public data
+        run: |
+          if git diff --quiet -- assets/github-pulse.svg; then
+            echo "Profile pulse is already current."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/github-pulse.svg
+          git commit -m "chore: refresh profile pulse"
+          git push
